@@ -1,0 +1,174 @@
+body{
+    margin:0;
+
+}
+.grid-container{
+    display:grid;
+    width: 100vw; 
+    height: 100vh;
+    grid-template-rows: repeat(10,1fr);
+    grid-template-columns: repeat(10,1fr);
+}
+ /* header */
+.grid-item1{ 
+    grid-row: 1/ span 1;
+    grid-column: 2/ span 8;
+}
+.grid-item2{
+    grid-row: 2/span 1;
+    grid-column: 2/ span 8;
+}
+/* body left */
+.grid-item3{
+    grid-row: 3/ span 7;
+    grid-column: 2/ span 5;
+}
+/* Body right  */
+.grid-item4{
+    grid-row: 3/ span 7;
+    grid-column: 7/ span 3;
+}
+/* footer */
+/* .grid-item5{
+    grid-row: 10/span 1;
+    grid-column: 2/ span 8;
+} */
+h1,h2{
+    text-align: center;
+}
+#header{
+    background-color: rgba(0,0,0,0.2); 
+}
+#body-add-task{
+    /* background-color: lightgrey; */
+    display: flex;
+    align-items: center;
+}
+.add-task-form{
+margin: 20px;
+position: relative;
+display: flex;
+align-items: center;
+    
+/* justify-content: space-around; */
+}
+input[type=text]{
+    height: 25px;
+    width: 20em;
+    background-color: rgba(0,0,0,0.1);
+
+}
+textarea{
+    height: 40px;
+    width: 40em;
+    margin-left: 40px;
+    background-color: rgba(0,0,0,0.1);
+}
+input[type="submit"]{
+    height:40px;
+    width: 80px;
+    font-size: medium;
+    background-color: rgba(0,0,0,0.1);
+    margin-left: 80px;
+    font-weight: 600;
+}
+#body-to-do{
+    border: 2px solid lightgray;
+}
+.to-do-container{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    height: 170px;
+}
+.to-do-card{
+    width: 30%;
+    border: 2px solid lightsteelblue;
+    padding: 5px;
+    position: relative;
+    margin: 5px;
+    box-sizing: border-box;
+}
+[draggable=true]{
+       cursor: move; 
+}
+.card-header{
+    display: inline-block;
+    width: 100%;
+
+}
+h3{
+    display: inline-block;
+}
+#edit-task{
+    width: 20px;
+    height: 20px;
+    float: left;
+}
+#complete-task{
+    margin-left: 90px;
+}
+#delete-task{
+    width: 20px;
+    height: 20px;
+    float: right;
+}
+.card-title{
+    margin: 10px;
+    text-align: center;
+    font-weight: 800;
+}
+.card-desc{
+    border:2px solid yellowgreen;
+}
+input[type=checkbox]{
+    width:20px;
+    height: 20px;
+}
+
+/* Edit Task Card using Modal */
+.card-modal{
+    display: none;
+    margin: 10px;
+    z-index: 1;
+    background-color: white; 
+    position: fixed;
+    flex-direction: column;
+    align-items: center;
+
+}
+/* #modal{
+
+} */
+.modal-heading{
+    text-align: center;
+}
+.modal-form{
+    margin: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+#body-completed{
+    border: 2px solid lightsteelblue;
+    padding: 5px;
+}
+#item-list-wrapper{
+    /* background-color: white; */
+    height: 170px;
+}
+.item-card{
+    height: auto;
+    display: flex;
+    /* background-color: lightseagreen; */
+    margin:5px;
+    border: 2px solid limegreen;
+}
+.item-title{
+    width:30%;
+    text-align: center;
+    font-weight:bold ;
+}
+.item-desc{
+    width: 60%;
+}

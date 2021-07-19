@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>To-do-list</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="action.js" async></script>
+    </head>
+    <body>
+        <div class="grid-container app">
+            <div class="grid-item1" id="header">
+                <h1>App: To-do list</h1>
+            </div>
+            <div class="grid-item2" id="body-add-task">
+                <form class="add-task-form" id="form" action="#!" method="">
+                    <input type="text" name="title" id="title"  placeholder="Task Title">
+                    <textarea name="desc" id="desc" placeholder="Description of Task"></textarea>
+                    <input type="submit" value="Submit" >
+                </form>
+            </div>
+            <div class="grid-item3" id="body-to-do">
+                <h2>To-do Tasks</h2>
+                <div class="to-do-container" id="toDo"> <!-- Card will be added dynamically-->
+                    
+                </div>
+            </div>
+            <div class="grid-item4" id="body-completed">
+                <h2>Task Completed</h2>
+                <div id="item-list-wrapper">
+                    <!-- <div class="item-card" id='item1'>
+                        <div class="item-title">Task Title</div>
+                        <div class="item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident, quasi.</div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-title">Task Title</div>
+                        <div class="item-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur voluptatum voluptates ut fugiat nesciunt impedit sint, dignissimos architecto, eius in iste minima, quae fuga totam?</div>
+                    </div> -->
+
+                </div>
+            </div>
+            <!-- <div class="grid-item5" id="footer">
+                Footer
+            </div> -->
+        </div>
+    </body>
+</html>
+
+<!--
+    CARD HTML
+
+    
+   <div class="to-do-card" id="card0" >
+                        <div class="card-header">
+                            <a href="#!">
+                                <img src="tiny-pencil.png" id="edit-task" >
+                            </a>
+                            <input type="checkbox" id="complete-task" >
+                            <a href="#!">
+                                <img src="close.png" id="delete-task" >
+                            </a> 
+                        </div>
+                        <div class="card-title">
+                            Title
+                        </div>
+                        <div class="card-desc">
+                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Laudantium soluta provident molestiae vel voluptas. Dolor quisquam id ipsum quod, obcaecati consequatur sit, voluptatum repellat quas cum ab magni quam voluptatem.
+                        </div> 
+    </div> 
+                     
+
+    MODAL
+
+    <div class="app">
+    <div class="btn">
+        <button id="edit-card">
+          Open
+        </button>
+    </div>
+    <div id="modal-div">
+      <form class="modal-form">
+        <input type="text" id="modal-title">
+        <textarea id="modal-desc"></textarea>
+        <input type="submit" value='submit'>
+        
+      </form>
+       
+    </div>
+    
+</div>
+-->
