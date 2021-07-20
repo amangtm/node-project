@@ -12,24 +12,28 @@
 //     return tasks;
 // }
 
-function createTask(taskType,tId,title,desc){ // fetch POST
-    fetch(`http://127.0.0.1:5000/api/tasks/${taskType}`, {   // POST Data in server
-        method: 'POST',
-        body: `id=${tId}&title=${title}&desc=${desc}`
-        ,
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
+async function createTask(taskType,tId,title,desc){ // fetch POST
+    const response= await fetch(`http://127.0.0.1:5000/api/tasks/${taskType}`, {   // POST Data in server
+                        method: 'POST',
+                        body: `id=${tId}&title=${title}&desc=${desc}`
+                        ,
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        }
+                    }
+                    )
+    if(!response.ok){ // Bad HTTP status
+        const message= `An error occured while creating task card: ${response.status}`
+        throw new Error(message);
     }
-    )
-    .then(res => res.json())
-    .then(data => console.log(data))
-    .catch(err => console.error(err))
+
+    const data= await response.json();
+    return data;
 
 }
 
-function updateTask(taskType,cardId,title,desc){ // fetch PUT
-    fetch(`http://127.0.0.1:5000/api/tasks/${taskType}/${cardId}`, {   // POST Data in server
+async function updateTask(taskType,cardId,title,desc){ // fetch PUT
+    const response= await fetch(`http://127.0.0.1:5000/api/tasks/${taskType}/${cardId}`, {   // POST Data in server
             method: 'PUT',
             body: `id=${cardId}&title=${title}&desc=${desc}`
             ,
@@ -38,17 +42,26 @@ function updateTask(taskType,cardId,title,desc){ // fetch PUT
             }
         }
         )
-        // .then(res => res.json())
-        .then(data => console.log(data))
-        .catch(err => console.error(err))
+    if(!response.ok){ // Bad HTTP status
+        const message= `An error occured while updating task card: ${response.status}`
+        throw new Error(message);
+    }
+
+    const data= await response.json();
+    return data;
+    
 
 }
-function deleteTask(taskType,cardId){ // fetch DELETE
-    fetch(`http://127.0.0.1:5000/api/tasks/${taskType}/${cardId}`, {
+async function deleteTask(taskType,cardId){ // fetch DELETE
+    const response= await fetch(`http://127.0.0.1:5000/api/tasks/${taskType}/${cardId}`, {
         method: 'DELETE'
     })
-    .then(res => console.log(res))
-    .catch(err => console.error(err))
+    if(!response.ok){ // Bad HTTP status
+        const message= `An error occured while deleting task card: ${response.status}`
+        throw new Error(message);
+    }
+    const res= await response.json()
+    return res;
 }
 
 
@@ -56,17 +69,21 @@ function deleteTask(taskType,cardId){ // fetch DELETE
 // ABOUT TO-DO CARD 
 const form = document.getElementById('form');
 const cardContainer = document.getElementById('toDo')
-let noOfCards,noOfItems;
-window.onload= function (){
-    noOfCards=0;
-    noOfItems=0;
-}
+// let noOfCards,noOfItems;
+// window.onload= function (){
+//     noOfCards=0;
+//     noOfItems=0;
 
-function createCardElement(title, desc) {  // create to-do card 
-    noOfCards = noOfCards + 1;
+//     console.log('Card and item index set to 0')
+// }
+
+function createCardElement(id,title, desc) {  // create to-do card 
+    // noOfCards = noOfCards + 1;
     const card = document.createElement('div')
     card.className = 'to-do-card';
-    card.id = noOfCards;
+    card.id = id // get random no for id
+    console.log('Id of created card',card.id)
+
     card.setAttribute('draggable', 'true');
     card.addEventListener('dragstart', cardDragStartHandler);
 
@@ -118,9 +135,13 @@ function removeCardHandler(event) { // Remove card Handler
     let cardTitle = document.getElementById(cardId).childNodes[1].innerText;
     let cardDesc = document.getElementById(cardId).childNodes[2].innerText;
 
-    // console.log(cardId)
-    deleteTask('todo',cardId);
-    document.getElementById(cardId).remove();
+    
+    deleteTask('todo',cardId)
+    .then(()=>{
+        console.log('Id of deleted card',cardId)
+        document.getElementById(cardId).remove();
+    } )
+    
 }
 
 
@@ -128,11 +149,14 @@ function removeCardHandler(event) { // Remove card Handler
 
 
 form.addEventListener('submit', function (event) {  // CREAT TASK CARD
-    const card = createCardElement(form.elements[0].value, form.elements[1].value);
+    const newId=Math.floor(Math.random()*1000);
+    const card = createCardElement(newId,form.elements[0].value, form.elements[1].value);
     // console.log(card.id)
-    createTask('todo',card.id,form.elements[0].value,form.elements[1].value)
-
-    cardContainer.append(card);
+    createTask('todo',card.id,form.elements[0].value,form.elements[1].value) // async Call
+    .then((data)=>{
+        console.log(data);
+        cardContainer.append(card);
+    })
     event.preventDefault();
     // console.log('Submit button clicked')
 });
@@ -173,7 +197,10 @@ function createModal(cardId, titleText, descText) {
         document.getElementById(cardId).querySelector('.card-desc').textContent = modalForm.elements[1].value;
 
 
-        updateTask('todo',cardId,modalForm.elements[0].value,modalForm.elements[1].value);
+        updateTask('todo',cardId,modalForm.elements[0].value,modalForm.elements[1].value)
+        .then(()=>{
+            console.log('Task card updated')
+        })
         // let pos=-1;  // Update local storage
         // let oldTitle=titleText;
         // let oldDesc=descText;
@@ -217,11 +244,13 @@ function editCardHandler(event) {
 //     }
 // })
 
-function createItemElement(title, desc) {
+function createItemElement(id,title, desc) {
     const item = document.createElement('div');
     item.className = 'item-card';
-    noOfItems=noOfItems+1;
-    item.id = noOfItems;
+    // noOfItems=noOfItems+1;
+    item.id =id;
+    console.log('Id of new Item: ',item.id)
+
     item.setAttribute('draggable', 'true');
     item.addEventListener('dragstart', itemDragStartHandler);
 
@@ -259,12 +288,18 @@ itemListWrapper.addEventListener('drop', function (event) {
     let title = document.getElementById(cardId).childNodes[1].innerText;
     let desc = document.getElementById(cardId).childNodes[2].innerText;
 
-    document.getElementById(cardId).remove();
-    let item = createItemElement(title, desc);
-    itemListWrapper.append(item);
+    const newId= Math.floor(Math.random()* 1000);
+    let item = createItemElement(newId,title, desc);
+    createTask('done', item.id,title, desc)
+    .then(()=>{
+        itemListWrapper.append(item);
+    })
 
-    deleteTask('todo',cardId);
-    createTask('done', item.id,title, desc);
+    console.log(`Id of dropped card:${cardId}` )
+    deleteTask('todo',cardId)
+    .then(()=>{
+        document.getElementById(cardId).remove();
+    })
 })
 
 
@@ -284,12 +319,19 @@ dropzone.addEventListener('drop', function (event) {
     let itemId = event.dataTransfer.getData('text/plain');
     let title = document.getElementById(itemId).childNodes[0].innerText;
     let desc = document.getElementById(itemId).childNodes[1].innerText;
-    document.getElementById(itemId).remove();
-    const newCard = createCardElement(title, desc);
-    dropzone.append(newCard);
+    
+    
+    deleteTask('done', itemId)
+    .then(()=>{
+        document.getElementById(itemId).remove();
+    })
 
-    deleteTask('done', itemId);
-    createTask('todo', newCard.id,title, desc);
+    const newId=Math.floor(Math.random()*1000);
+    const newCard = createCardElement(newId,title, desc);
+    createTask('todo', newId,title, desc)
+    .then(()=>{
+        dropzone.append(newCard);
+    })
 })
 
 
@@ -299,15 +341,15 @@ fetch('http://127.0.0.1:5000/api/tasks')
     .then(data => data.json())
     .then(res => {
         if(res.todo){
-            res.todo.map(({ title, desc }) => {
-                let card = createCardElement(title, desc);
+            res.todo.map(({ id,title, desc }) => {
+                let card = createCardElement(id,title, desc);
                 cardContainer.append(card);
             })
         }
         
         if(res.done){
-            res.done.map(({ title, desc }) => {
-                let item = createItemElement(title, desc);
+            res.done.map(({ id,title, desc }) => {
+                let item = createItemElement(id,title, desc);
                 itemListWrapper.append(item);
             })
         }

@@ -22,8 +22,9 @@ fs.writeFile('data.json',JSON.stringify(obj,null,2),{flag: 'w+'},err =>{ // File
         console.log(err)
         return ;
     }
-    fs.readFile('data.json','utf-8',(data,err)=>{
-        if(data){
+    console.log('File creation called')
+    fs.readFile('data.json','utf-8',(err,data)=>{
+        if(err){
             fileData=data;
         }
         else{
