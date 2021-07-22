@@ -2,18 +2,17 @@ const express= require('express')
 const cors= require('cors')
 
 const app= express()
-const fs=require('fs')
+const fs=require('fs');
+const { throws } = require('assert');
 const port=(process.env.PORT || '5000');
 app.use(cors())
-
 
 
 app.get('/api/tasks',(req,res)=>{
     let fileData;
     fs.readFile('data.json','utf-8',(err,data)=>{
         if(err){
-            console.error(err);
-            return;
+            throw new Error(err);
          }
         if(data!==""){
             data= JSON.parse(data);
@@ -31,24 +30,25 @@ app.post('/api/tasks/:type',express.urlencoded({extended: true}),(req,res)=>{ //
 
     fs.readFile('data.json','utf-8',(err,data)=>{
         if(err){
-            console.error(err);
-            return;
+            throw new Error(err);
          }
-        console.log(data)
+
+         if(data==undefined) return ;
+        console.log('Before json parsing ',data)
          let fileData=JSON.parse(data);
         fileData[taskType].push({id:id, title:title, desc:desc })
         //  console.log(fileData)
         //  res.end();
         fs.writeFile('data.json',JSON.stringify(fileData,null,2),{flag: 'r+'},err =>{ // File creation 
             if(err){
-                console.error(err)
-                return ;
-            }
+                throw new Error(err);
+             }
             console.log('File written successfully after Post request')
             res.json(fileData);
         })
     })  
 })
+
 
 app.put('/api/tasks/:type/:id',express.urlencoded({extended: true}),(req,res)=>{ // Update a task data
     const taskType=req.params.type;
@@ -56,9 +56,11 @@ app.put('/api/tasks/:type/:id',express.urlencoded({extended: true}),(req,res)=>{
    
     fs.readFile('data.json','utf-8',(err,data)=>{
         if(err){
-            console.error(err);
-            return;
-         }
+            throw new Error(err);
+        }
+
+         if(data==undefined) return ;
+        //  console.log(data);
          let fileData=JSON.parse(data);
 
          let index= fileData[taskType].findIndex(t => t.id==taskId);
@@ -69,49 +71,50 @@ app.put('/api/tasks/:type/:id',express.urlencoded({extended: true}),(req,res)=>{
         //  res.end();
         fs.writeFile('data.json',JSON.stringify(fileData,null,2),{flag: 'r+'},err =>{ // File creation 
             if(err){
-                console.error(err)
-                return ;
-            }
+                throw new Error(err);
+             }
             console.log('File written successfully after PUT request')
             res.json(fileData);
         })
     })
 }) 
+ 
 
-app.delete('/api/tasks/:type/:id',express.urlencoded({extended: true}),(req,res)=>{ // Update a task data
+
+
+app.delete('/api/tasks/:type/:id',(req,res)=>{ // Update a task data
     const taskType=req.params.type;
     const taskId=req.params.id;
    
     fs.readFile('data.json','utf-8',(err,data)=>{
         if(err){
-            console.error(err);
-            return;
+            throw new Error(err);
          }
-         let fileData;
-         if(fileData!==""){
-             fileData=JSON.parse(fileData);
-         }
-         
-         let index= fileData[taskType].findIndex(t => t.id==taskId);
-         if(index==-1) return res.status(404).send('Error: Task not found') 
 
-        
+         if(data==undefined) return ;
+         let fileData=data;
+        //  console.log(fileData);
+         fileData=JSON.parse(fileData);
+         let index= fileData[taskType].findIndex(t => t.id==taskId);
+         if(index==-1) return res.status(404).send('Error: Task not found')         
          fileData[taskType].splice(index,1);
 
         fs.writeFile('data.json',JSON.stringify(fileData,null,2),{flag: 'w'},err =>{ // File creation 
             if(err){
-                console.error(err)
-                return ;
+                throw new Error(err);
             }
             console.log('File written successfully after DELETE request')
             res.json(fileData);
         })
     })
+
+    
 }) 
 
 app.listen(port,()=>{
-    console.log(`Server is running at http://localhost:${port}`);
+    console.log(`Server is running and see get request at http://localhost:${port}/api/tasks `);
 })
+
 
 
 

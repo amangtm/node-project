@@ -65,7 +65,6 @@ async function deleteTask(taskType,cardId){ // fetch DELETE
 }
 
 
-
 // ABOUT TO-DO CARD 
 const form = document.getElementById('form');
 const cardContainer = document.getElementById('toDo')
@@ -201,17 +200,6 @@ function createModal(cardId, titleText, descText) {
         .then(()=>{
             console.log('Task card updated')
         })
-        // let pos=-1;  // Update local storage
-        // let oldTitle=titleText;
-        // let oldDesc=descText;
-        // let arr=JSON.parse(localStorage.getItem('todo')); 
-        // pos=findIndexInArray(arr,oldTitle,oldDesc);
-        // if(pos!==-1){
-        //     arr[pos].title=modalForm.elements[0].value;
-        //     arr[pos].desc=modalForm.elements[1].value
-        //     localStorage.setItem('todo',JSON.stringify(arr));
-        // }
-
         modalDiv.style.display = 'none';
         document.body.style.backgroundColor = 'white';
     })
@@ -268,6 +256,7 @@ function createItemElement(id,title, desc) {
 }
 
 
+
 // DRAG and Drop ACTION
 // 1. from ToDO -> Completed 
 function cardDragStartHandler(event) {
@@ -285,8 +274,13 @@ itemListWrapper.addEventListener('dragover', function (event) {
 itemListWrapper.addEventListener('drop', function (event) {
     event.preventDefault();
     let cardId = event.dataTransfer.getData('text/plain');
+    
+    if(document.getElementById(cardId).parentElement.className!=='to-do-container') return ; // check if validation happens from inside done container
+
     let title = document.getElementById(cardId).childNodes[1].innerText;
     let desc = document.getElementById(cardId).childNodes[2].innerText;
+
+    console.log('Drop event fired (todo -> done) with data:',cardId,title,desc);
 
     const newId= Math.floor(Math.random()* 1000);
     let item = createItemElement(newId,title, desc);
@@ -303,6 +297,7 @@ itemListWrapper.addEventListener('drop', function (event) {
 })
 
 
+
 // 2. Drag-drop from Completed -> to-do
 const dropzone = cardContainer;
 function itemDragStartHandler(event) {
@@ -312,11 +307,15 @@ function itemDragStartHandler(event) {
 dropzone.addEventListener('dragover', function (event) {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'allowed';
+ 
+}) 
 
-})
 dropzone.addEventListener('drop', function (event) {
     event.preventDefault();
     let itemId = event.dataTransfer.getData('text/plain');
+
+    if(document.getElementById(itemId).parentElement.id!=='item-list-wrapper') return ;
+
     let title = document.getElementById(itemId).childNodes[0].innerText;
     let desc = document.getElementById(itemId).childNodes[1].innerText;
     
